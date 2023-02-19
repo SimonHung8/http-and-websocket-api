@@ -1,23 +1,12 @@
 const WebSocket = require('ws')
 const BITSTAMP_URL = 'wss://ws.bitstamp.net'
 const CHANNEL_PREFIX = 'live_trades_'
-const DEFAULT_CURRENCY_PAIR = [
-  'btcusd',
-  'btceur',
-  'btcgbp',
-  'btcpax',
-  'gbpusd',
-  'gbpeur',
-  'eurusd',
-  'xrpusd',
-  'xrpeur',
-  'xrpbtc'
-]
+const DEFAULT_CURRENCY_PAIR = require('../../config/currency-pair.json').currencyPair
 
-module.exports = () => {
+module.exports = wss => {
   const ws = new WebSocket(BITSTAMP_URL)
   ws.on('open', () => {
-    console.log('bitstamp connected')
+    console.log('Bitstamp connected')
     DEFAULT_CURRENCY_PAIR.forEach(pair => {
       ws.send(JSON.stringify({
         event: "bts:subscribe",
@@ -29,8 +18,18 @@ module.exports = () => {
   })
 
   ws.on('message', message => {
-    console.log(JSON.parse(message))
-    // handle message from bitstamp
+    const { event, data, channel } = JSON.parse(message)
+    if (event === 'trade') {
+      const currencyPair = channel.replace(CHANNEL_PREFIX, '')
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN && client.subscription.some(sub => sub === currencyPair)) {
+          client.send(JSON.stringify({
+            currencyPair,
+            price: data.price
+          }))
+        }
+      })
+    }
   })
 }
 

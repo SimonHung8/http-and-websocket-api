@@ -2,6 +2,7 @@ const express = require('express')
 const WebSocket = require('ws')
 const http = require('http')
 const routes = require('./routes')
+const wsEventHandler = require('./sockets/events')
 const { errorHandler, undefinedRoutes } = require('./middleware/error-handler')
 // redis setting
 require('./config/redis')
@@ -18,11 +19,9 @@ app.use(errorHandler)
 app.use('*', undefinedRoutes)
 
 wss.on('connection', ws => {
-  console.log('WebSocket connected')
-  ws.send('Welcome')
-  ws.on('close', () => console.log('connection closed'))
+  wsEventHandler(ws)
 })
 
-connectBitstamp()
+connectBitstamp(wss)
 
 server.listen(port, () => console.log(`Listening on port ${port}`))
