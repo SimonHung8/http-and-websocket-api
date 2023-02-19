@@ -3,7 +3,10 @@ const WebSocket = require('ws')
 const http = require('http')
 const routes = require('./routes')
 const { errorHandler, undefinedRoutes } = require('./middleware/error-handler')
+// redis setting
 require('./config/redis')
+// bitstamp WebSocket API connection
+const connectBitstamp = require('./sockets/client/bitstamp')
 
 const app = express()
 const port = 3000
@@ -19,5 +22,7 @@ wss.on('connection', ws => {
   ws.send('Welcome')
   ws.on('close', () => console.log('connection closed'))
 })
+
+connectBitstamp()
 
 server.listen(port, () => console.log(`Listening on port ${port}`))
