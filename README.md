@@ -7,19 +7,29 @@ Please install Node.js, npm and redis before starting.
 ## How to Use
 
 1. Clone the project to local side
-2. Access the project directory through terminal and install packages
-
+   ```bash
+   git clone https://github.com/SimonHung8/http-and-websocket-api.git
+   ```
+2. Access the project directory
+   ```bash
+   cd http-and-websocket-api
+   ```
+3. Install packages
    ```bash
    npm install
    ```
+4. To start redis:
+   ```bash
+   redis-server
+   ```
 
-3. To start server:
+5. To start server:
 
    ```bash
    npm run start
    ```
 
-4. You'll see below messages in console
+6. You'll see below messages in console
 
    ```bash
    Listening on port 3000
@@ -27,11 +37,11 @@ Please install Node.js, npm and redis before starting.
    Bitstamp connected
    ```
 
-5. Now server is accessible on the following address:
+7. Now server is accessible on the following address:
    * HTTP API: http://localhost:3000/data?user=id
    * WebSocket API: ws://localhost:3000/streaming
 
-6. To stop the server:
+8. To stop the server:
 
    ```bash
    ctrl + c
